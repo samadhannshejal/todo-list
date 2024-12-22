@@ -6,12 +6,14 @@ const toDoList = document.querySelector('.todo-list');
 const standardTheme = document.querySelector('.standard-theme');
 const lightTheme = document.querySelector('.light-theme');
 const darkerTheme = document.querySelector('.darker-theme');
+const tomorrowTodo=document.querySelector('.todo-tomorrow-list')
 
 
 // Event Listeners
-
+ 
 toDoBtn.addEventListener('click', addToDo);
 toDoList.addEventListener('click', deletecheck);
+tomorrowTodo.addEventListener('click', deletecheck);
 document.addEventListener("DOMContentLoaded", getTodos);
 standardTheme.addEventListener('click', () => changeTheme('standard'));
 lightTheme.addEventListener('click', () => changeTheme('light'));
@@ -201,3 +203,96 @@ function changeTheme(color) {
         });
     });
 }
+
+
+// tomorrow  task
+
+const toDoTomorrowBtn = document.querySelector('.todo-tomorrow-btn');
+const toDoTomorrowList = document.querySelector('.todo-tomorrow-list');
+
+// Event Listeners
+toDoTomorrowBtn.addEventListener('click', addTomorrowToDo);
+
+function addTomorrowToDo(e) {
+    e.preventDefault()
+    
+
+    console.log("addddd")
+    if (toDoInput.value === '') {
+        alert("You must write something!");
+        return;
+    }
+
+    // Create Todo DIV
+    const toDoDiv = document.createElement("div");
+    toDoDiv.classList.add('todo', `${savedTheme}-todo`);
+
+    // Create LI
+    const newToDo = document.createElement('li');
+    newToDo.innerText = toDoInput.value;
+    newToDo.classList.add('todo-item');
+    toDoDiv.appendChild(newToDo);
+
+    // Add to local storage
+    saveLocalTomorrow(toDoInput.value);
+
+    // Create Check Button
+    const checked = document.createElement('button');
+    checked.innerHTML = '<i class="fas fa-check"></i>';
+    checked.classList.add('check-btn', `${savedTheme}-button`);
+    toDoDiv.appendChild(checked);
+
+    // Create Delete Button
+    const deleted = document.createElement('button');
+    deleted.innerHTML = '<i class="fas fa-trash"></i>';
+    deleted.classList.add('delete-btn', `${savedTheme}-button`);
+    toDoDiv.appendChild(deleted);
+
+    // Append to Tomorrow List
+    toDoTomorrowList.appendChild(toDoDiv);
+
+    // Clear input field
+    toDoInput.value = '';
+}
+
+function saveLocalTomorrow(todo) {
+    let tomorrowTodos = localStorage.getItem('tomorrowTodos') ? 
+                        JSON.parse(localStorage.getItem('tomorrowTodos')) : [];
+    tomorrowTodos.push(todo);
+    localStorage.setItem('tomorrowTodos', JSON.stringify(tomorrowTodos));
+}
+
+function getTomorrowTodos() {
+    let tomorrowTodos = localStorage.getItem('tomorrowTodos') ? 
+                        JSON.parse(localStorage.getItem('tomorrowTodos')) : [];
+
+    tomorrowTodos.forEach(function(todo) {
+        // Create Todo DIV
+        const toDoDiv = document.createElement("div");
+        toDoDiv.classList.add("todo", `${savedTheme}-todo`);
+
+        // Create LI
+        const newToDo = document.createElement('li');
+        newToDo.innerText = todo;
+        newToDo.classList.add('todo-item');
+        toDoDiv.appendChild(newToDo);
+
+        // Create Check Button
+        const checked = document.createElement('button');
+        checked.innerHTML = '<i class="fas fa-check"></i>';
+        checked.classList.add("check-btn", `${savedTheme}-button`);
+        toDoDiv.appendChild(checked);
+
+        // Create Delete Button
+        const deleted = document.createElement('button');
+        deleted.innerHTML = '<i class="fas fa-trash"></i>';
+        deleted.classList.add("delete-btn", `${savedTheme}-button`);
+        toDoDiv.appendChild(deleted);
+
+        // Append to Tomorrow List
+        toDoTomorrowList.appendChild(toDoDiv);
+    });
+}
+
+// Call getTomorrowTodos on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", getTomorrowTodos);
